@@ -1,0 +1,28 @@
+@media screen and (max-width: 600px) {
+    button{
+        margin-top: 1rem;
+    }
+}
+
+/* assets/Hero.css */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact; /* For WebKit browsers */
+    print-color-adjust: exact; /* Standard property */
+  }
+
+  #pdf-content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow: hidden; /* Prevent content overflow */
+  }
+
+  .no-print {
+    display: none !important; /* Hide the button during print */
+  }
+
+  .MuiContainer-root {
+    overflow: hidden; /* Ensure container does not overflow */
+  }
+}
