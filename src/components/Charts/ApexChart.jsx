@@ -101,7 +101,6 @@ class ApexChart extends Component {
           </div>
         </div>
         <div style={{ height: "50px" }}></div>
-        {/* Added space */}
         {isSmallScreen ? (
           <>
             <div className="row">

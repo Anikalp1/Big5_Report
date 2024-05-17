@@ -13,11 +13,11 @@ export default function Hero() {
     const originalChartWidth = chartElement.offsetWidth;
     const originalChartHeight = chartElement.offsetHeight;
 
-    const pageWidth = 595.28; // A4 page width in points
-    const pageHeight = 841.89; // A4 page height in points
+    const pageWidth = 595.28; 
+    const pageHeight = 841.89; 
     const margin = 20;
     const maxChartWidth = pageWidth - margin * 2;
-    const maxChartHeight = pageHeight - (margin + 20 + 40 + 50 + 30); // Adjust based on your layout
+    const maxChartHeight = pageHeight - (margin + 20 + 40 + 50 + 30); 
 
     let chartWidth, chartHeight;
 
@@ -120,7 +120,7 @@ export default function Hero() {
             minWidth: "fit-content",
             mt: { md: "0", xs: "1rem" },
             "@media print": {
-              display: "none", // Hide the button on print
+              display: "none",
             },
           }}
         >
