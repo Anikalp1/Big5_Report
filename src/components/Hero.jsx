@@ -10,22 +10,33 @@ export default function Hero() {
     setIsLoading(true);
     const scale = 2;
     const chartElement = document.getElementById("chart");
-    const width = chartElement.offsetWidth;
-    const height = chartElement.offsetHeight;
+    const originalChartWidth = chartElement.offsetWidth;
+    const originalChartHeight = chartElement.offsetHeight;
+
+    const pageWidth = 595.28; // A4 page width in points
+    const pageHeight = 841.89; // A4 page height in points
+    const margin = 20;
+    const maxChartWidth = pageWidth - margin * 2;
+    const maxChartHeight = pageHeight - (margin + 20 + 40 + 50 + 30); // Adjust based on your layout
+
+    let chartWidth, chartHeight;
+
+    if (originalChartWidth / originalChartHeight > maxChartWidth / maxChartHeight) {
+      chartWidth = maxChartWidth;
+      chartHeight = (originalChartHeight / originalChartWidth) * chartWidth;
+    } else {
+      chartHeight = maxChartHeight;
+      chartWidth = (originalChartWidth / originalChartHeight) * chartHeight;
+    }
 
     html2canvas(chartElement, { scale: scale })
       .then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
 
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const margin = 20;
         const titleY = margin + 20;
         const userInfoY = titleY + 40;
         const chartY = userInfoY + 50;
-        const chartWidth = pageWidth - margin * 2;
-        const chartHeight = (height / width) * chartWidth;
 
         pdf.setFontSize(20);
         pdf.setFont("helvetica", "bold");
@@ -53,8 +64,7 @@ export default function Hero() {
         const footerY = chartY + chartHeight + 30;
         pdf.setFontSize(12);
         pdf.setTextColor(0, 0, 0);
-        const footerText =
-          "You can see a more detailed report of each trait at ";
+        const footerText = "You can see a more detailed report of each trait at ";
         const linkText = "big5 report by edwisely.";
         const linkUrl = "https://big5-report.vercel.app/";
 

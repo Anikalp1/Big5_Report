@@ -12,7 +12,8 @@ class ApexChart extends Component {
         },
         xaxis: {
           categories:
-            props.categories || [
+            props.categories ||
+            [
               "Neuroticism",
               "Extraversion",
               "Openness to Experience",
@@ -36,7 +37,13 @@ class ApexChart extends Component {
         chart: {
           background: "#f4f4f440",
         },
-        labels: ["Neuroticism", "Extraversion", "Openness", "Agreeableness", "Conscientiousness"],
+        labels: [
+          "Neuroticism",
+          "Extraversion",
+          "Openness",
+          "Agreeableness",
+          "Conscientiousness",
+        ],
       },
       pieSeries: [44, 55, 41, 17, 15],
       radarOptions: {
@@ -59,51 +66,87 @@ class ApexChart extends Component {
           data: [102, 70, 81, 73, 60],
         },
       ],
+      screenWidth: window.innerWidth
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (
-      nextProps.categories !== prevState.options.xaxis.categories ||
-      nextProps.data !== prevState.series[0].data
-    ) {
-      return {
-        options: {
-          ...prevState.options,
-          xaxis: {
-            categories: nextProps.categories || prevState.options.xaxis.categories,
-          },
-        },
-        series: [
-          {
-            ...prevState.series[0],
-            data: nextProps.data || prevState.series[0].data,
-          },
-        ],
-      };
-    }
-    return null;
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    this.setState({
+      screenWidth: window.innerWidth
+    });
+  };
+
   render() {
+    const { screenWidth } = this.state;
+    const isSmallScreen = screenWidth <= 1023;
+
     return (
-      <div className="ApexChart" id="chart" style={{ width: "100%", height: "900px" }}>
+      <div className="ApexChart" id="chart" style={{ width: "100%" }}>
         <div className="row">
           <div className="mixed-chart">
-            <Chart options={this.state.options} series={this.state.series} type="bar" height={400} />
+            <Chart
+              options={this.state.options}
+              series={this.state.series}
+              type="bar"
+              height={400}
+            />
           </div>
         </div>
-        <div style={{ height: "50px" }}></div> {/* Added space */}
-        <div className="row">
-          <div className="mixed-chart" style={{ display: "flex" }}>
-            <div style={{ flex: 1 }}>
-              <Chart options={this.state.pieOptions} series={this.state.pieSeries} type="pie" height={400} />
+        <div style={{ height: "50px" }}></div>
+        {/* Added space */}
+        {isSmallScreen ? (
+          <>
+            <div className="row">
+              <div className="mixed-chart">
+                <Chart
+                  options={this.state.pieOptions}
+                  series={this.state.pieSeries}
+                  type="pie"
+                  height={400}
+                />
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <Chart options={this.state.radarOptions} series={this.state.radarSeries} type="radar" height={400} />
+            <div className="row">
+              <div className="mixed-chart">
+                <Chart
+                  options={this.state.radarOptions}
+                  series={this.state.radarSeries}
+                  type="radar"
+                  height={400}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="row">
+            <div className="mixed-chart" style={{ display: "flex", flexWrap: "wrap" }}>
+              <div style={{ flex: "0 0 50%", maxWidth: "50%" }}>
+                <Chart
+                  options={this.state.pieOptions}
+                  series={this.state.pieSeries}
+                  type="pie"
+                  height={400}
+                />
+              </div>
+              <div style={{ flex: "0 0 50%", maxWidth: "50%" }}>
+                <Chart
+                  options={this.state.radarOptions}
+                  series={this.state.radarSeries}
+                  type="radar"
+                  height={400}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
