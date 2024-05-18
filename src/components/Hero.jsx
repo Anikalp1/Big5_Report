@@ -1,87 +1,15 @@
-import React, { useState } from "react";
-import { Box, Button, Typography, CircularProgress } from "@mui/material";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import React, { useState } from 'react';
+import { Box, Button, Typography, CircularProgress } from '@mui/material';
+import renderToPDF from '../utils/renderToPDF';
 
 export default function Hero() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDownloadPDF = () => {
     setIsLoading(true);
-    const scale = 2;
-    const chartElement = document.getElementById("chart");
-    const originalChartWidth = chartElement.offsetWidth;
-    const originalChartHeight = chartElement.offsetHeight;
-
-    const pageWidth = 595.28; 
-    const pageHeight = 841.89; 
-    const margin = 20;
-    const maxChartWidth = pageWidth - margin * 2;
-    const maxChartHeight = pageHeight - (margin + 20 + 40 + 50 + 30); 
-
-    let chartWidth, chartHeight;
-
-    if (originalChartWidth / originalChartHeight > maxChartWidth / maxChartHeight) {
-      chartWidth = maxChartWidth;
-      chartHeight = (originalChartHeight / originalChartWidth) * chartWidth;
-    } else {
-      chartHeight = maxChartHeight;
-      chartWidth = (originalChartWidth / originalChartHeight) * chartHeight;
-    }
-
-    html2canvas(chartElement, { scale: scale })
-      .then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "pt", "a4");
-
-        const titleY = margin + 20;
-        const userInfoY = titleY + 40;
-        const chartY = userInfoY + 50;
-
-        pdf.setFontSize(20);
-        pdf.setFont("helvetica", "bold");
-        pdf.text("The Big 5 Personality Report", pageWidth / 2, titleY, {
-          align: "center",
-        });
-
-        pdf.setDrawColor(0, 0, 0);
-        pdf.setLineWidth(0.5);
-        pdf.line(margin, titleY + 20, pageWidth - margin, titleY + 20);
-
-        pdf.setFontSize(12);
-        pdf.setFont("helvetica", "normal");
-        const userName = "User Name";
-        const userPhone = "12345 67890";
-        pdf.text(`Name: ${userName}`, margin, userInfoY);
-        pdf.text(`Phone: ${userPhone}`, pageWidth - margin, userInfoY, {
-          align: "right",
-        });
-
-        pdf.line(margin, userInfoY + 10, pageWidth - margin, userInfoY + 10);
-
-        pdf.addImage(imgData, "PNG", margin, chartY, chartWidth, chartHeight);
-
-        const footerY = chartY + chartHeight + 30;
-        pdf.setFontSize(12);
-        pdf.setTextColor(0, 0, 0);
-        const footerText = "You can see a more detailed report of each trait at ";
-        const linkText = "big5 report by edwisely.";
-        const linkUrl = "https://big5-report.vercel.app/";
-
-        const textWidth = pdf.getTextWidth(footerText + " ");
-        const linkWidth = pdf.getTextWidth(linkText);
-        const textX = (pageWidth - (textWidth + linkWidth)) / 2;
-
-        pdf.line(margin, footerY - 15, pageWidth - margin, footerY - 15);
-
-        pdf.text(footerText + " ", textX, footerY);
-        pdf.setTextColor(0, 0, 255);
-        pdf.textWithLink(linkText, textX + textWidth, footerY, {
-          url: linkUrl,
-        });
-
+    renderToPDF()
+      .then(() => {
         setIsLoading(false);
-        pdf.save("document.pdf");
       })
       .catch(() => {
         setIsLoading(false);
@@ -91,43 +19,50 @@ export default function Hero() {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: { md: "row", xs: "column" },
-        alignItems: "center",
-        justifyContent: "space-between",
-        my: "2rem",
-        maxWidth: "1145px",
+        textAlign: 'center',
+        marginBottom: '20px',
+        padding: { xs: '10px', md: '20px' },
+        backgroundColor: '#fff',
       }}
     >
-      <Typography
-        variant="h4"
-        component="h1"
-        sx={{ fontWeight: "bold", textAlign: { md: "left", xs: "center" } }}
-      >
-        The Big Five Personality Test
+      <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', marginBottom: '10px' }}>
+        The Big Five Personality Test Report
       </Typography>
-
-      <Box sx={{ position: "relative" }}>
+      <hr style={{ width: '50%', margin: 'auto' }} />
+      <Typography variant="body1" sx={{ margin: '10px 0' }}>
+        Name: User Name 
+      </Typography>
+      <Typography variant="body1" sx={{ margin: '10px 0' }}>
+        Contact Number: 12345 67890
+      </Typography>
+      <hr style={{ width: '50%', margin: 'auto' }} />
+      <Box sx={{ position: 'relative', marginTop: '20px' }}>
         <Button
           id="downloadPDF"
           variant="outlined"
           onClick={handleDownloadPDF}
           disabled={isLoading}
           sx={{
-            color: "primary.orange",
-            ":hover": { bgcolor: "#f44336", color: "white" },
-            border: "1px solid #f44336",
-            minWidth: "fit-content",
-            mt: { md: "0", xs: "1rem" },
-            "@media print": {
-              display: "none",
+            color: 'primary.orange',
+            ':hover': { bgcolor: '#f44336', color: 'white' },
+            border: '1px solid #f44336',
+            minWidth: 'fit-content',
+            '@media print': {
+              display: 'none', 
             },
+            '.pdf-render &': {
+              display: 'none', 
+            },
+            position: 'relative',
           }}
         >
           {isLoading ? (
-            <CircularProgress size={24} sx={{ color: "#f44336" }} />
+            <>
+              <CircularProgress size={24} sx={{ color: '#f44336', marginRight: '8px' }} />
+              <span>Preparing your Report</span>
+            </>
           ) : (
-            "Download PDF"
+            'Download PDF'
           )}
         </Button>
       </Box>

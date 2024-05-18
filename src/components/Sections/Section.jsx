@@ -43,6 +43,9 @@ const Section = ({ title, description, categories, data, children }) => {
             border: "1px solid #f44336",
             my:"0.5rem",
             ":hover": { bgcolor: "#f44336", color: "white" },
+            '.pdf-render &': {
+              display: 'none', // Hide button in PDF render mode
+            },
           }}
           onClick={toggleContent}
         >
