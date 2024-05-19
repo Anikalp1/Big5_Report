@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client'; // React 18
+import { createRoot } from 'react-dom/client'; 
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import PDFContent from '../components/PDFContent/PDFContent';
@@ -24,12 +24,10 @@ const renderToPDF = async () => {
   rootElement.classList.add('pdf-render');
   document.body.appendChild(rootElement);
 
-  // Create a React root and render PDFContent
   const root = createRoot(rootElement);
   root.render(<PDFContent />);
 
-  // Wait for charts to render properly
-  await new Promise(resolve => setTimeout(resolve, 3000)); // Increased delay
+  await new Promise(resolve => setTimeout(resolve, 1500)); 
 
   const elements = [
     document.querySelector('#hero-chart-section'),
@@ -41,7 +39,7 @@ const renderToPDF = async () => {
   ];
 
   if (!checkChartsRendered(elements)) {
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Additional wait if charts are not rendered
+    await new Promise(resolve => setTimeout(resolve, 1000)); 
   }
 
   const pdf = new jsPDF('p', 'mm', 'a4');
